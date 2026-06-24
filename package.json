@@ -1,0 +1,20 @@
+{
+  "name": "fresco-fried-chicken",
+  "version": "1.0.0",
+  "description": "Fresco Fried Chicken Egypt - Full Stack App (PostgreSQL)",
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "migrate": "cd backend && node db/migrate.js",
+    "seed": "cd backend && node db/seed.js",
+    "setup": "cd backend && node db/migrate.js && node db/seed.js",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:frontend": "cd frontend && npm run build"
+  },
+  "private": true,
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.3.1",
+    "pg": "^8.20.0"
+  }
+}
