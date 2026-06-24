@@ -10,6 +10,43 @@ const app = express();
 
 const isProd = process.env.NODE_ENV === 'production';
 
+function parseOrigins(value) {
+  if (!value) return [];
+  return value.split(',').map((s) => s.trim()).filter(Boolean);
+}
+
+const prodOrigins = [
+  'https://frescoegypt.com',
+  'https://www.frescoegypt.com',
+  ...parseOrigins(process.env.FRONTEND_URL),
+  ...parseOrigins(process.env.CORS_ORIGINS),
+];
+
+const devOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'http://127.0.0.1:3000',
+];
+
+function isAllowedOrigin(origin) {
+  if (!origin) return true;
+  if (prodOrigins.includes(origin)) return true;
+  if (/^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin)) return true;
+  if (!isProd && devOrigins.includes(origin)) return true;
+  return false;
+}
+
+function corsOrigin(origin, callback) {
+  if (isAllowedOrigin(origin)) {
+    // Echo the request origin when credentials are enabled.
+    callback(null, origin || true);
+    return;
+  }
+
+  console.warn('[CORS] Blocked origin:', origin);
+  callback(new Error(`Not allowed by CORS: ${origin}`));
+}
+
 // --- 1. IMPORT ROUTERS ---
 // ⚡ Moving these to the top prevents the "Object instead of Middleware" crash
 const authRoutes = require('./routes/auth');
@@ -25,9 +62,7 @@ const geocodeRoutes = require('./routes/geocode');
 // --- 2. SECURITY & MIDDLEWARE ---
 app.use(helmet());
 app.use(cors({
-  origin: isProd
-    ? ['https://frescoegypt.com', 'https://www.frescoegypt.com']
-    : ['http://localhost:3000', 'http://localhost:5173', 'http://127.0.0.1:3000'],
+  origin: corsOrigin,
   credentials: true,
 }));
 

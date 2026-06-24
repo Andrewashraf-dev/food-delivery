@@ -1,8 +1,28 @@
 import axios from 'axios';
 import i18n from '../i18n/index.js';
 
+function resolveApiBaseUrl() {
+  const raw = import.meta.env.VITE_API_URL?.trim();
+  if (!raw) return '/api';
+
+  let url = raw.replace(/\/+$/, '');
+  if (!/^https?:\/\//i.test(url)) {
+    url = `https://${url.replace(/^\/+/, '')}`;
+  }
+
+  try {
+    const parsed = new URL(url);
+    if (parsed.pathname === '' || parsed.pathname === '/') {
+      parsed.pathname = '/api';
+    }
+    return `${parsed.origin}${parsed.pathname}`.replace(/\/+$/, '');
+  } catch {
+    return '/api';
+  }
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: resolveApiBaseUrl(),
   timeout: 10000,
 });
 
