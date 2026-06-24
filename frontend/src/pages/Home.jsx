@@ -6,7 +6,9 @@ import { useTranslation } from 'react-i18next';
 import api from '../hooks/useApi';
 import MenuCard from '../components/MenuCard';
 import ReviewsSlider from '../components/ReviewsSlider';
-import shopImage from '../fresco/shop.jpg';
+
+const SHOP_IMAGE =
+  'https://res.cloudinary.com/dobok0qbs/image/upload/q_auto/f_auto/v1775304555/shop_aays3q.jpg';
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 40 },
@@ -192,7 +194,7 @@ export default function Home() {
               className="relative"
             >
               <img
-                src={shopImage}
+                src={SHOP_IMAGE}
                 alt="Our kitchen"
                 className="rounded-3xl w-full h-96 object-cover shadow-2xl"
               />
